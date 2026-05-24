@@ -1,9 +1,9 @@
 import socket
 import os
 import struct
-
+import ssl
 HOST = "192.168.50.77"
-PORT = 8000
+PORT = 8200
 
 File_send = r"C:\Users\Miri\Desktop\For_Sending"
 
@@ -18,14 +18,17 @@ def send_file():
     
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
         client_socket.connect((HOST, PORT))
-        
-        client_socket.sendall(struct.pack("!I", len(file_name)))
-        client_socket.sendall(struct.pack("!Q", file_size))
-        client_socket.sendall(file_name)
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        secure_socket = context.wrap_socket(client_socket)
+        secure_socket.sendall(struct.pack("!I", len(file_name)))
+        secure_socket.sendall(struct.pack("!Q", file_size))
+        secure_socket.sendall(file_name)
         
         with open(File_send, "rb") as file:
             while chunk := file.read(4096):
-                client_socket.sendall(chunk)
+                secure_socket.sendall(chunk)
                 
     print("File sent successfully")
 

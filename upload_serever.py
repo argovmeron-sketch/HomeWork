@@ -1,12 +1,12 @@
 import os
 import socket
 import struct
+import ssl
+from cryptography.fernet import Fernet
+HOST="192.168.50.77"
+PORT=8200
 
-
-HOST="192.168.1.194"
-PORT="8200"
-
-Save_Folder=r"C\USERS\Meron\Python"
+Save_Folder=r"C:\USERS\Meron\Python"
 
 def recv_exact(sock,size):
     data=b""
@@ -21,7 +21,7 @@ def recieve_file():
 
     os.makedirs(Save_Folder,exist_ok=True)
     with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as server_socket:
-        server_socket.bind(HOST,PORT)
+        server_socket.bind((HOST,PORT))
         server_socket.listen(1)
         
         client_socket ,client_adress=server_socket.accept()
